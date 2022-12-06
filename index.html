@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        input[type=text], select {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          
+        }
+        
+        input[type=submit] {
+          width: 100%;
+          background-color: #4CAF50;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 0;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        
+        input[type=submit]:hover {
+          background-color: #45a049;
+        }
+        form { 
+            width: 100%;
+          border-radius: 5px;
+          background-color: #f2f2f2;
+          padding: 20px;
+          position: absolute; bottom: 0;
+        }
+        </style>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='index.css'>
+    <script src='main.js'></script>
+</head>
+<body>        
+    <div id="messages"></div>
+    <!-- message form -->
+        <form name="publish">
+            <label for="fname">Type your message</label>
+            <input type="text" name="message">
+            <input type="submit" value="Send">
+          </form>
+  <!-- div with messages -->
+  
+</body>
+<script>
+    let socket = new WebSocket(`ws://localhost:1234/`);
+
+// send message from the form
+document.forms.publish.onsubmit = function() {
+  let outgoingMessage = this.message.value;
+
+  socket.send(outgoingMessage);
+  return false;
+};
+
+// message received - show the message in div#messages
+socket.onmessage = function(event) {
+  let message = event.data;
+  let messageElem = document.createElement('h1');
+  messageElem.textContent = message;
+  document.getElementById('messages').append(messageElem);
+}
+</script>
+</html>
